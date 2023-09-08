@@ -1,0 +1,30 @@
+h3{
+   color: red;
+}
+
+.group-1{
+    background-color: lightgrey;
+    border: black;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.group-2{
+    background-color: lightgreen;
+    border: black;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.text-blue{
+    color: blue;
+}
+
+.text-red{
+    color: red;
+}
+
+#line-1{
+    color: red;
+    text-decoration: underline;
+}
