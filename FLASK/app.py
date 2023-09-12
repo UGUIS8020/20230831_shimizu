@@ -22,6 +22,15 @@ def test():
 def userid(user_id):
     return '<h1>Your User Id is {0} {1} {2}</h1>'.format(user_id[0],user_id[1],user_id[2],)
 
+@app.route('/user')
+def user():
+        user_list = [
+        ["1","山田　太郎", "taro@test.com", "1"],
+        ["2","鈴木　花子", "hanako@test.com", "0"],
+        ["3","清水　義孝", "yoshitaka@test.com", "0"]
+        ]
+        return render_template('user.html',users=user_list)
+
 @app.errorhandler(404)
 def error_404(error):
     return render_template('error_pages/404.html'),404
