@@ -22,5 +22,9 @@ def test():
 def userid(user_id):
     return '<h1>Your User Id is {0} {1} {2}</h1>'.format(user_id[0],user_id[1],user_id[2],)
 
+@app.errorhandler(404)
+def error_404(error):
+    return render_template('error_pages/404.html'),404
+
 if __name__ == '__main__':
     app.run(debug=True)

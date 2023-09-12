@@ -3,7 +3,15 @@
 {% block content %}
 
 <h1>Product List</h1>
-<p>{{products}}</p>
-<p>{{product_dict}}</p>
 
+<ul>
+    {% for product in products %}
+        {% if product == "computer2" %}
+          <li><b>{{product}}</b></li>
+        {% else %}
+          <li>{{product}}</li>
+        {% endif %}
+        
+    {% endfor %}
+</ul>
 {% endblock %}
