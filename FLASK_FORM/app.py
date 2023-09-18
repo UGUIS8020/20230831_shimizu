@@ -4,7 +4,7 @@ from wtforms import StringField, PasswordField,SubmitField
 
 app = Flask(__name__)
 
-app.config['SECRET_KYE'] = 'mysecretkye'
+app.config['SECRET_KEY'] = 'mysecretkey'
 
 class RegistrationForm(FlaskForm):
     email = StringField('メールアドレス')
@@ -13,7 +13,7 @@ class RegistrationForm(FlaskForm):
     pass_confirm = PasswordField('パスワード(確認)')
     submit = SubmitField('登録')
 
-@app.route('/register' methodsd=['GET','POST'])
+@app.route('/register', methods=['GET','POST'])
 def register(): 
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -21,7 +21,7 @@ def register():
         session['username'] = form.username.data
         session['password'] = form.password.data
         return redirect(url_for('user_maintenance'))
-    return render_template('register.html' form_form)
+    return render_template('register.html', form=form)
 
 @app.route('/user_maintenance')
 def user_maintenance():

@@ -9,9 +9,9 @@
                     <h3>ユーザー登録</h3>
                         <p>ユーザー情報を入力してください</p>
                         <form method="post">
-                            {{ from.hidden_tag() }}
+                            {{ form.hidden_tag() }}
                             <div class="mb-3">
-                            {{ form.username.label }} {{ from.username() }}
+                            {{ form.username.label }} {{ form.username() }}
                             </div>
                             <div class="mb-3">
                             {{ form.email.label }} {{ form.email }}
