@@ -12,7 +12,7 @@ def test():
 
 @app.route("/user/<user_id>")
 def userid(user_id):
-    return "<h1>Your User ID: {0}</h1>".format(user_id)
+    return "<h1>Your User ID is {0} {1} {2}</h1>".format(user_id[0],user_id[1],user_id[2])
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
