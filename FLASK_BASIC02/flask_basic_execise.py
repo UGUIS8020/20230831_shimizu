@@ -17,6 +17,10 @@ def product(product_id):
     for product in product_list:
         if product_id in product:
             break
+    product_name = product[1]
+    product_cpu = product[2]
+    product_price = product[3]
+    return 'Product Name: {0} <br> CPU: {1} <br> Price: {2}'.format(product_name, product_cpu, product_price)
 
 if __name__ == "__main__":
     app.run(debug=True)
