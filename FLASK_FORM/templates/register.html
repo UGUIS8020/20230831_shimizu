@@ -9,20 +9,25 @@
                     <h3>ユーザー登録</h3>
                         <p>ユーザー情報を入力してください</p>
                         <form method="post">
-                            {{ form.hidden_tag() }}
+                            {{ form.hidden_tag()}}
                             <div class="mb-3">
-                            {{ form.username.label }} {{ form.username() }}
+                               {{ render_field(form.username,placeholder="User Name",class="form-control form-control-lg") }}
                             </div>
+
                             <div class="mb-3">
-                            {{ form.email.label }} {{ form.email }}
+                                {{ render_field(form.email,placeholder="Mail Address",class="form-control form-control-lg") }}
                             </div>
+
                             <div class="mb-3">
-                            {{ form.password.label }} {{ form.password() }}
+                                {{ render_field(form.password,placeholder="パスワード",class="form-control form-control-lg") }}
                             </div>
+
                             <div class="mb-3">
-                            {{ form.pass_confirm.label }} {{ form.pass_confirm() }}
+                                {{ render_field(form.pass_confirm,placeholder="パスワード(確認)",class="form-control form-control-lg") }}
                             </div>
-                            {{ form.submit() }}
+
+                                {{form.submit(class="btn btn-outline-light w-100")}}
+
                         </div>
                     </div>
                </div>
