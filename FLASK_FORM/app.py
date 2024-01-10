@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import ValidationError,StringField, PasswordField,SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo
 import os
-from flask import Flask
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime
@@ -81,6 +81,18 @@ class RegistrationForm(FlaskForm):
     def validate_email(self,field):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('入力されたメールアドレスはすでに使用されています')
+        
+class UpdateUserForm(FlaskForm):
+    email = StringField("メールアドレス", validators=[DataRequired(), Email(message='正しいメールアドレスを入力してください')])
+    username = StringField("ユーザー名", validators=[DataRequired()])
+    password = PasswordField("パスワード", validators=[EqualTo('pass_confirm', message='パスワードが一致していません')])
+    pass_confirm = PasswordField("パスワード(確認)")
+    submit = SubmitField('更新')
+
+    def __init__(self,user_id,*args,**kwargs):
+        super(UpdateUserForm,self).__init__(*args,**kwargs)
+        self.id = user_id
+
 
 @app.route('/register', methods=['GET','POST'])
 def register(): 
