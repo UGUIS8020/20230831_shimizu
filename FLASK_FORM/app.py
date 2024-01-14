@@ -93,6 +93,13 @@ class UpdateUserForm(FlaskForm):
         super(UpdateUserForm,self).__init__(*args,**kwargs)
         self.id = user_id
 
+    def validate_email(self,field):
+        if User.query.filter(User.id != self.id).filter_by(email=field.data).first():
+            raise ValidationError('入力されたメールアドレスはすでに使用されています')
+
+    def validate_username(self,field):
+        if User.query.filter(User.id != self.id).filter_by(username=field.data).first():
+            raise ValidationError('入力されたユーザー名はすでに使用されています')
 
 @app.route('/register', methods=['GET','POST'])
 def register(): 
@@ -132,6 +139,14 @@ def account(user_id):
         form.email.data = user.email
         form.username.data = user.username
     return render_template('account.html', form=form)
+
+@app.route('/<int:user_id>delete', methods=['GET','POST'])
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash('ユーザーが削除されました')
+    return redirect(url_for('user_maintenance'))
 
 if __name__ == '__main__':
     app.run(debug=True)
