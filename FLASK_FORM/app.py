@@ -140,7 +140,7 @@ def account(user_id):
         form.username.data = user.username
     return render_template('account.html', form=form)
 
-@app.route('/<int:user_id>delete', methods=['GET','POST'])
+@app.route('/<int:user_id>/delete', methods=['GET','POST'])
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
     db.session.delete(user)
