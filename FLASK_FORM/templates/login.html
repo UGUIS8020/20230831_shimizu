@@ -9,16 +9,14 @@
                     <div class="card-body text-light">
                     <h3>ログイン</h3>
                          <form method="post">
-                           {{ form.hidden_tag()}}
+                           {{ form.hidden_tag() }}
                            
                             <div class="mb-3">
                             {{ render_field(form.email, class="form-control form-control-lg", placeholder="メールアドレス") }}
                             </div>
                             <div class="mb-3">
                             {{ render_field(form.password, class="form-control form-control-lg", placeholder="パスワード") }}
-                            </div>
-                            
-                            
+                            </div>                            
                             {{ form.submit(class="btn btn-outline-light w-100", value="ログイン") }}
                         </div>
                     </div>

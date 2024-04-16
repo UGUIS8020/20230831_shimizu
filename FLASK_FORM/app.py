@@ -2,8 +2,8 @@ from flask import Flask, render_template, url_for, redirect, session, flash,requ
 from flask_wtf import FlaskForm
 from wtforms import ValidationError,StringField, PasswordField,SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo
-from flask_login import LoginManager, UserMixin, login_user
-from werkzeug.security import check_password_hash
+from flask_login import LoginManager, UserMixin, login_user, logout_user
+from werkzeug.security import check_password_hash, generate_password_hash
 
 import os
 from flask_sqlalchemy import SQLAlchemy
@@ -49,17 +49,26 @@ class User(db.Model, UserMixin):
     administrator = db.Column(db.String(1))
     post = db.relationship('BlogPost', backref='author', lazy='dynamic')
 
-    def __init__(self, username, email, password_hash, administrator):
+    def __init__(self, username, email, password, administrator):
         self.username = username
         self.email = email
-        self.password_hash = password_hash
+        self.password = password
         self.administrator = administrator
 
     def __repr__(self):
         return f"Username: {self.username}"
     
     def check_password(self,password):
-        return check_password_hash(self.password_hash,password)
+        return check_password_hash(self.password_hash, password)
+    
+    @property
+    def pasword(self):
+        raise AttributeError('パスワードは読み取り専用です')
+    
+    @pasword.setter
+    def password(self,password):
+        self.password_hash = generate_password_hash(password)
+
     
 class BlogPost(db.Model):
     __tablename__ = 'blogposts'
@@ -130,16 +139,19 @@ def login():
             if user.check_password(form.password.data):
                 login_user(user)
                 next = request.args.get('next')
-                if next == None or not next[0]=='/':
+                if next == None or not next[0] == '/':
                     next = url_for('user_maintenance')
-                return redirect(next)
-              
+                return redirect(next)              
             else:
                 flash('パスワード一致しません')
-
         else:
             flash('入力されたユーザーは存在しません')
     return render_template('login.html', form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
     
 
 @app.route('/register', methods=['GET','POST'])
@@ -150,7 +162,7 @@ def register():
         # session['username'] = form.username.data
         # session['password'] = form.password.data
 
-        user = User(email=form.email.data, username=form.username.data, password_hash=form.password.data, administrator="0")
+        user = User(email=form.email.data, username=form.username.data, password=form.password.data, administrator="0")
         db.session.add(user)
         db.session.commit()
 
@@ -172,7 +184,7 @@ def account(user_id):
         user.email = form.email.data
         user.username = form.username.data
         if form.password.data:
-            user.password_hash = form.password.data
+            user.password = form.password.data
         db.session.commit()
         flash('ユーザー情報が更新されました')
         return redirect(url_for('user_maintenance'))
