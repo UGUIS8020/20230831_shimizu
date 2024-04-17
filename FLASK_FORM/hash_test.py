@@ -6,9 +6,9 @@ print("hashd_password:", password_hash)
 
 correct_password = "123"
 check_result = check_password_hash(password_hash, correct_password)
-print("check_result:", check_result)
+print("heck_password_hash:", check_result)
 
-wrong_password = "acc"
+wrong_password = "abc"
 check_result = check_password_hash(password_hash, wrong_password)
 print("check_result:", check_result)
 
