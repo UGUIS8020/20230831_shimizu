@@ -1,8 +1,8 @@
-from flask import Flask, render_template, url_for, redirect, session, flash,request
+from flask import Flask, render_template, url_for, redirect, session, flash, request, abort
 from flask_wtf import FlaskForm
 from wtforms import ValidationError,StringField, PasswordField,SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo
-from flask_login import LoginManager, UserMixin, login_user, logout_user
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import os
@@ -23,6 +23,10 @@ Migrate(app,db)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+def localize_callback(*args,**kwargs):
+    return'このページにアクセスするにはログインが必要です'
+login_manager.localize_callback = localize_callback
 
 
 from sqlalchemy.engine import Engine
@@ -68,6 +72,12 @@ class User(db.Model, UserMixin):
     @pasword.setter
     def password(self,password):
         self.password_hash = generate_password_hash(password)
+
+    def is_administrator(self):
+        if self.administrator == "1":
+            return 1
+        else:
+            return 0
 
     
 class BlogPost(db.Model):
@@ -130,6 +140,14 @@ class UpdateUserForm(FlaskForm):
         if User.query.filter(User.id != self.id).filter_by(username=field.data).first():
             raise ValidationError('入力されたユーザー名はすでに使用されています')
         
+@app.errorhandler(403)
+def error_403(error):
+    return render_template('error_pages/403.html'),403
+
+@app.errorhandler(404)
+def error_404(error):
+    return render_template('error_pages/404.html'),404
+
 @app.route('/login', methods=['GET','POST'])
 def login():
     form = LoginForm()
@@ -149,14 +167,19 @@ def login():
     return render_template('login.html', form=form)
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
     
 
 @app.route('/register', methods=['GET','POST'])
+@login_required
 def register(): 
     form = RegistrationForm()
+    if not current_user.is_administrator():
+        abort(403)
+
     if form.validate_on_submit():
         # session['email'] = form.email.data
         # session['username'] = form.username.data
@@ -171,14 +194,18 @@ def register():
     return render_template('register.html', form=form)
 
 @app.route('/user_maintenance')
+@login_required
 def user_maintenance():
     page = request.args.get('page', 1, type=int)
     users = User.query.order_by(User.id).paginate(page=page, per_page=10)
     return render_template('user_maintenance.html', users=users)
 
 @app.route('/<int:user_id>/account',methods=['GET','POST'])
+@login_required
 def account(user_id):
     user = User.query.get_or_404(user_id)
+    if user.id != current_user.id and not current_user.is_administrator():
+        abort(403)
     form = UpdateUserForm(user_id)
     if form.validate_on_submit():
         user.email = form.email.data
@@ -194,8 +221,14 @@ def account(user_id):
     return render_template('account.html', form=form)
 
 @app.route('/<int:user_id>/delete', methods=['GET','POST'])
+@login_required
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
+    if not current_user.is_administrator():
+        abort(403)
+    if user.is_administrator():
+        flash('管理者ユーザーは削除できません')
+        return redirect(url_for('account', user_id=user.id))
     db.session.delete(user)
     db.session.commit()
     flash('ユーザーが削除されました')

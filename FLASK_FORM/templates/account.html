@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+    {% if current_user.is_administrator() %}
 
     <section class="menu">
     <div class="container my-3 py-4 bg-light">
@@ -13,6 +14,7 @@
         </div>
     </div>
 </section>
+{% endif %}
 
 <section class="user_update">
     <div class="container my-3">
