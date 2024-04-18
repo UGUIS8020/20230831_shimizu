@@ -24,13 +24,10 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-<<<<<<< HEAD
-def localize_callback(*args,**kwargs):
-    return'このページにアクセスするにはログインが必要です'
-=======
+
 def localize_callback(*args, **kwargs):
     return 'このページにアクセスするには、ログインが必要です。'    
->>>>>>> ec6165d157c3845dfb5bac36baf1a8031f76ff5b
+
 login_manager.localize_callback = localize_callback
 
 
@@ -144,11 +141,7 @@ class UpdateUserForm(FlaskForm):
     def validate_username(self,field):
         if User.query.filter(User.id != self.id).filter_by(username=field.data).first():
             raise ValidationError('入力されたユーザー名はすでに使用されています')
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> ec6165d157c3845dfb5bac36baf1a8031f76ff5b
 @app.errorhandler(403)
 def error_403(error):
     return render_template('error_pages/403.html'),403
@@ -213,11 +206,9 @@ def user_maintenance():
 @login_required
 def account(user_id):
     user = User.query.get_or_404(user_id)
-<<<<<<< HEAD
+
     if user.id != current_user.id and not current_user.is_administrator():
-=======
-    if user.id !=current_user.id and not current_user.is_administrator():
->>>>>>> ec6165d157c3845dfb5bac36baf1a8031f76ff5b
+
         abort(403)
     form = UpdateUserForm(user_id)
     if form.validate_on_submit():
@@ -242,11 +233,7 @@ def delete_user(user_id):
         abort(403)
     if user.is_administrator():
         flash('管理者ユーザーは削除できません')
-<<<<<<< HEAD
-        return redirect(url_for('account', user_id=user.id))
-=======
         return redirect(url_for('account', user_id=user_id))
->>>>>>> ec6165d157c3845dfb5bac36baf1a8031f76ff5b
     db.session.delete(user)
     db.session.commit()
     flash('ユーザーアカウントが削除されました')
