@@ -223,6 +223,7 @@ def account(user_id):
 @app.route('/<int:user_id>/delete', methods=['GET','POST'])
 @login_required
 def delete_user(user_id):
+    print("こんにちは")
     user = User.query.get_or_404(user_id)
     if not current_user.is_administrator():
         abort(403)
