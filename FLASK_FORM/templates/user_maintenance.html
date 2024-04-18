@@ -54,10 +54,16 @@
                         <td>{{ user.email }}</td>
                         <td>{{ user.administrator }}</td>
                         <td><a href="#">ブログ投稿数</a></td>
+<<<<<<< HEAD
+                        <td>
+                            {% if current_user.is_administrator() or current_user.id == user.id %}
+                            <a href="{{ url_for('account',user_id=user.id) }}" class="btn btn-secondary">変更</a>{% endif %}</td>
+=======
                         {% if current_user.is_administrator() or current_user.id == user.id %}
                         <td><a href="{{ url_for('account',user_id=user.id) }}" class="btn btn-secondary">変更</a>
                         {% endif %}
                         </td>
+>>>>>>> ec6165d157c3845dfb5bac36baf1a8031f76ff5b
                     </tr>
                     {% endfor %}
                 </tbody>
