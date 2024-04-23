@@ -5,9 +5,11 @@ from flask_login import UserMixin
 
 from company_blog import db, login_manager
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -32,10 +34,10 @@ class User(db.Model, UserMixin):
         return check_password_hash(self.password_hash, password)
     
     @property
-    def pasword(self):
+    def password(self):
         raise AttributeError('パスワードは読み取り専用です')
     
-    @pasword.setter
+    @password.setter
     def password(self,password):
         self.password_hash = generate_password_hash(password)
 
@@ -58,7 +60,7 @@ class BlogPost(db.Model):
     summary = db.Column(db.String(140))
     featured_image = db.Column(db.String(140))
 
-    def __init__(self, title, text, featured_image,user_id, category_id,summary):
+    def __init__(self, title, text, featured_image,user_id, category_id, summary):
         self.title = title
         self.text = text
         self.featured_image = featured_image
@@ -71,32 +73,32 @@ class BlogPost(db.Model):
     
 class BlogCategory(db.Model):
     __tablename__ = 'blog_category'
-
+    
     id = db.Column(db.Integer, primary_key = True)
     category = db.Column(db.String(140))
     posts = db.relationship('BlogPost', backref='blogcategory', lazy='dynamic')
-   
+    
     def __init__(self, category):
         self.category = category
-
+    
     def __repr__(self):
-        return f"CategoryID: {self.id}, CategoryName: {self.category} \n"
+        return f"CategoryID: {self.id},CategoryName: {self.category} \n"
 
 class Inquiry(db.Model):
-    __tablename__ = 'inquiry'
-
+    __tablename__ = 'inquiriry'
+    
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
     email = db.Column(db.String(64))
     title = db.Column(db.String(140))
     text = db.Column(db.Text)
-    date = db.Column(db.DateTime,default=datetime.now(timezone('Asia/Tokyo')))
+    date = db.Column(db.DateTime, default=datetime.now(timezone('Asia/Tokyo')))
     
     def __init__(self, name, email, title, text):
         self.name = name
         self.email = email
         self.title = title
         self.text = text
-
+    
     def __repr__(self):
         return f"InquiryID: {self.id}, Name: {self.name}, Text: {self.text} \n"
