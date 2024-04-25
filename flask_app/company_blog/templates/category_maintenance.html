@@ -12,7 +12,6 @@
 
         </div>
     </header>
-    {% if current_user.is_administrator() %}
     <section id="manu">
         <div class="container my-3 py-3 bg-light">
             <div class="row">
@@ -24,8 +23,7 @@
             </div>
         </div>
     </section>
-    {% endif %}
-
+    
     <section id="list">
         <div class="container my-3">
             <div class="col-md-9">
@@ -49,9 +47,11 @@
                             <td>{{ blog_category.category }}</td>
                             <td><a href="#">ブログ投稿数</a></td>
                             <td>
-                               
+                                {% if current_user.is_administrator() %}
+                                <a href="{{ url_for('main.blog_category', blog_category_id=blog_category.id) }}" class="btn btn-secondary">変更</a>
+                            {% endif %}
                             </td>
-                        </tr>
+                            </tr>
                         {% endfor %}
 
                     </tbody>
